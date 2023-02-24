@@ -6,8 +6,6 @@ provider:
   runtime: nodejs18.x
   region: us-west-2
   deploymentMethod: direct
-  environment:
-    DYNAMODB_CUSTOMER_TABLE: ${self:service}-customerTable-${sls:stage}
   iam:
     role:
       statements:
@@ -19,22 +17,35 @@ provider:
             - 'dynamodb:UpdateItem'
             - 'dynamodb:DeleteItem'
           Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-customerTable-${sls:stage}
+  environment:
+    DYNAMODB_CUSTOMER_TABLE: ${self:service}-customerTable-${sls:stage}
 
 
 functions:
-  api:
-    handler: index.handler
-    events:
-      - httpApi:
-          path: /
-          method: get
+  # api:
+  #   handler: index.handler
+  #   events:
+  #     - httpApi:
+  #         path: /
+  #         method: get
   createCustomer:
     handler: createCustomer.createCustomer
     events:
       - httpApi:
           path: /
           method: post
-
+  getCustomers:
+    handler: getCustomers.getCustomers
+    events:
+      - httpApi:
+          path: /
+          method: get	
+  dispatcher:
+    handler: dispatcher.dispatch
+    events:
+      - sns:
+          arn: !Ref SuperTopic
+          topicName: MyCustomTopic
 
 resources:
   Resources:
@@ -49,3 +60,7 @@ resources:
           - AttributeName: primary_key
             KeyType: HASH
         TableName: ${self:service}-customerTable-${sls:stage}
+    SuperTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: MyCustomTopic
