@@ -24,24 +24,24 @@ provider:
 
 
 functions:
-  # api:
-  #   handler: index.handler
-  #   events:
-  #     - httpApi:
-  #         path: /
-  #         method: get
+  api:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
   createCustomer:
     handler: createCustomer.createCustomer
     events:
       - httpApi:
           path: /
           method: post
-  getCustomers:
-    handler: getCustomers.getCustomers
-    events:
-      - httpApi:
-          path: /
-          method: get	
+  # getCustomers:
+  #   handler: getCustomers.getCustomers
+  #   events:
+  #     - httpApi:
+  #         path: /
+  #         method: get	
   dispatcher:
     handler: dispatcher.dispatch
     events:
