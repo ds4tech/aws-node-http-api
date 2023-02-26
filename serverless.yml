@@ -24,11 +24,11 @@ provider:
 
 
 functions:
-  api:
+  health:
     handler: index.handler
     events:
       - httpApi:
-          path: /
+          path: /health
           method: get
   createCustomer:
     handler: createCustomer.createCustomer
@@ -36,18 +36,23 @@ functions:
       - httpApi:
           path: /
           method: post
-  # getCustomers:
-  #   handler: getCustomers.getCustomers
-  #   events:
-  #     - httpApi:
-  #         path: /
-  #         method: get	
+  getCustomers:
+    handler: getCustomers.getCustomers
+    events:
+      - httpApi:
+          path: /
+          method: get	
   dispatcher:
-    handler: dispatcher.dispatch
+    # handler: dispatcher.dispatch
+    handler: getCustomers.getCustomers
     events:
       - sns:
           arn: !Ref SuperTopic
           topicName: MyCustomTopic
+
+  igluctl:
+    handler: handler.igluctl
+    memorySize: 512 # function specific
 
 resources:
   Resources:
