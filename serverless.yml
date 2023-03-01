@@ -21,6 +21,8 @@ provider:
           Resource: arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-customerTable-${sls:stage}
   environment:
     DYNAMODB_CUSTOMER_TABLE: ${self:service}-customerTable-${sls:stage}
+    KID: ${env:AWS_ACCESS_KEY_ID}
+    SAKEY: ${env:AWS_SECRET_ACCESS_KEY}
 
 
 functions:
@@ -49,10 +51,6 @@ functions:
       - sns:
           arn: !Ref SuperTopic
           topicName: MyCustomTopic
-
-  igluctl:
-    handler: handler.igluctl
-    memorySize: 512 # function specific
 
 resources:
   Resources:
